@@ -1,0 +1,18 @@
+{
+  "name": "staffsante-cv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "googleapis": "^171.0.0",
+    "playwright": "^1.58.0"
+  }
+}
