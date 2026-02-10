@@ -23,33 +23,33 @@ export async function scrapeCVs() {
 
   // 2. Cliquer sur le lien recruiter
   await page.click('a.link_card_nav_recruiter');
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000);
 
   // 3. Base de CV
   await page.click('li#profiles > a');
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000);
 
   // 4. Consulter base cv
   await page.click('a.btn_style[href*="/profiles"]');
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(100);
 
   // 5. Recherche aide soignant
   const inputJob = page.locator('#token-input-');
   await inputJob.type('Aide soignant', { delay: 100 });
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(500);
   await page.keyboard.press('Enter');
 
   // 6. Recherche île de france
   const inputLocation = page.locator('input[data-autocomplete-url*="/locations/autocomplete"]');
   await inputLocation.type('Île-de-France', { delay: 100 });
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(500);
   await page.click('.ui-autocomplete li:first-child');
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(500);
 
   // 7. Filtre date 12 mois et rechercher
   await page.selectOption('#last_update', { label: '12 mois' });
   await page.click('input.submit_button[value="Rechercher"]');
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(2000);
 
   console.log('🔍 Recherche lancée, début du scraping...');
 
@@ -74,7 +74,7 @@ export async function scrapeCVs() {
       try {
         const buttons = await page.locator('a:has-text("Voir le CV")').all();
         await buttons[i].click();
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(300);
 
         // Récupérer le nom
         let nom = `cv_p${pageNum}_${i + 1}`;
@@ -107,7 +107,7 @@ export async function scrapeCVs() {
 
       // Retour à la liste
       await page.goBack();
-      await page.waitForTimeout(1500);
+      await page.waitForTimeout(300);
     }
 
     // Page suivante
@@ -116,7 +116,7 @@ export async function scrapeCVs() {
       if (await nextPageBtn.count() > 0) {
         console.log(`\n➡️ Aller à la page ${pageNum + 1}...`);
         await nextPageBtn.click();
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(800);
         pageNum++;
       } else {
         console.log('\n⏹️ Pas de page suivante trouvée');

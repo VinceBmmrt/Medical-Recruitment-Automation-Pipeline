@@ -48,9 +48,9 @@ async function main() {
     
     // 5. Créer dossier dans Drive
     console.log('📁 Création du dossier...');
+    const parentFolderId = '1VtKpeeKf9pP1BB6hHNtIJeIZjKwvWaA0'; // Ridma
     const folderName = `CVs_AideSoignantes_${new Date().toISOString().split('T')[0]}`;
-    const folderId = await createFolder(drive, folderName);
-    
+    const folderId = await createFolder(drive, folderName, parentFolderId);
     console.log(`✅ Dossier créé: "${folderName}"\n`);
     
     // 6. Lister tous les fichiers CV
@@ -93,8 +93,19 @@ async function main() {
         console.log(`   ❌ Erreur: ${error.message}`);
       }
     }
+      // 🔹 Vider le dossier local cvs après upload
+try {
+  const filesInFolder = fs.readdirSync(CVS_FOLDER);
+  for (const file of filesInFolder) {
+    const filePath = path.join(CVS_FOLDER, file);
+    fs.unlinkSync(filePath); // supprime le fichier
+  }
+  console.log(`🗑️ Dossier ${CVS_FOLDER} vidé`);
+} catch (err) {
+  console.log(`⚠️ Erreur lors de la suppression des fichiers locaux : ${err.message}`);
+}
     
-    // 8. Résumé
+    // 8. Résuméf
     console.log('\n' + '='.repeat(40));
     console.log(`🎉 UPLOAD TERMINÉ !`);
     console.log(`📊 ${successCount}/${files.length} fichiers uploadés`);
@@ -104,6 +115,7 @@ async function main() {
   } catch (error) {
     console.error('❌ ERREUR PRINCIPALE:', error.message);
   }
+
 }
 
 // Fonctions auxiliaires
@@ -156,10 +168,11 @@ async function authenticate(oAuth2Client) {
   });
 }
 
-async function createFolder(drive, folderName) {
+async function createFolder(drive, folderName, parentFolderId) {
   const fileMetadata = {
     name: folderName,
     mimeType: 'application/vnd.google-apps.folder',
+    parents: parentFolderId ? [parentFolderId] : undefined,
   };
   
   const response = await drive.files.create({
